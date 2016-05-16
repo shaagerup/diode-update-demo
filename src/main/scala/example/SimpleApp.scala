@@ -98,13 +98,13 @@ object ModelC {
 
     def render(p : Props) : ReactElement = {
         <.div(
-          p.proxy.connect(_.value)(pxy => TextInputC(TextInputC.Props(pxy, setText(p.path)))),
+          p.proxy.wrap(_.value)(pxy => TextInputC(TextInputC.Props(pxy, setText(p.path)))),
           <.button(^.cls := "fa fa-plus", p.path.toString, ^.onClick --> p.proxy.dispatch(AddChild(p.path))),
           <.ul(
             p.proxy.value.children.zipWithIndex.map{ case (m,i) =>
               <.li(^.key := i,
                 <.button(^.cls := "fa fa-minus", ^.onClick --> p.proxy.dispatch(RemoveChild(p.path :+ i))),
-                p.proxy.connect(m => m.children(i)){ pxy => ModelC(ModelC.Props(pxy, p.path :+ i)) }
+                p.proxy.wrap(m => m.children(i)){ pxy => ModelC(ModelC.Props(pxy, p.path :+ i)) }
               )
             }
           )
